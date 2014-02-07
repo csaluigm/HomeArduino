@@ -7,8 +7,10 @@ import gnu.io.SerialPortEventListener;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.util.Enumeration;
 
+import org.hyperic.sigar.CpuInfo;
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.Sigar;
@@ -109,14 +111,24 @@ public synchronized void serialEvent(SerialPortEvent oEvent) {
  public String imprimirInfoRam() throws SigarException {
 	 Sigar sigar = new Sigar();
 	 Mem memoria = sigar.getMem();    
-     System.out.println("Cantidad de memoria RAM: "+ memoria.getRam() + "MB");
-     System.out.println("Uso: "+(((int)memoria.getUsedPercent())+"%"));     
-     return "RAM:"+memoria.getRam()+"MB"+"-"+((int)memoria.getUsedPercent())+"%";
+     //System.out.println("Cantidad de memoria RAM: "+ memoria.getRam() + "MB");
+     System.out.println("Uso RAM: "+(((int)memoria.getUsedPercent())+"%"));
+	 
+	DecimalFormat df = new DecimalFormat("##.#");
+     return "RAM:"+memoria.getRam()+"MB"+"-"+df.format(memoria.getUsedPercent())+"%";
  }
  
  public String imprimirInfoCpu()throws SigarException {
+	 //sigar.getNetInfo().getHostName()
 	 Sigar sigar = new Sigar();
-	 return "CPU:"+CpuPerc.format(sigar.getCpuPerc().getCombined());
+	 CpuInfo[] infos = null;
+	 infos = sigar.getCpuInfoList();
+	 CpuInfo info = infos[0];
+     //System.out.println("Uso CPU: "+CpuPerc.format(sigar.getCpuPerc().getCombined()));
+	 String ucpu=CpuPerc.format(sigar.getCpuPerc().getCombined());
+	ucpu= ucpu.replace(".", ",");
+	
+	 return "CPU:"+info.getTotalCores()+"CORES-"+ucpu;
  }
  
 public static void main(String[] args) throws Exception {
