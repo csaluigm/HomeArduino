@@ -1,4 +1,4 @@
-package com.boss.puertos;
+package com.csaluigm.puertos;
 import java.util.Enumeration;
 import gnu.io.*;
 public class puertos {

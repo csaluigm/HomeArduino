@@ -1,4 +1,4 @@
-package com.boss.serial;
+package com.csaluigm.serial;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
@@ -7,14 +7,12 @@ import gnu.io.SerialPortEventListener;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.Date;
 import java.util.Enumeration;
 
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
-import org.hyperic.sigar.Swap;
 public class SerialClass implements SerialPortEventListener {
  
  public SerialPort serialPort;
@@ -106,19 +104,13 @@ public synchronized void serialEvent(SerialPortEvent oEvent) {
  }
  }
  
- private Long enBytes(long valor) {
-     return new Long(valor / 1024);
- }
+
  
  public String imprimirInfoRam() throws SigarException {
 	 Sigar sigar = new Sigar();
 	 Mem memoria = sigar.getMem();    
      System.out.println("Cantidad de memoria RAM: "+ memoria.getRam() + "MB");
-     //System.out.println("Total: "+enBytes(memoria.getTotal()));
-     //System.out.println("Usada: "+enBytes(memoria.getUsed()));
-     //System.out.println("Disponible: "+enBytes(memoria.getFree()));
-     System.out.println("Uso: "+(((int)memoria.getUsedPercent())+"%"));
-     
+     System.out.println("Uso: "+(((int)memoria.getUsedPercent())+"%"));     
      return "RAM:"+memoria.getRam()+"MB"+"-"+((int)memoria.getUsedPercent())+"%";
  }
  
@@ -131,25 +123,23 @@ public static void main(String[] args) throws Exception {
  final SerialClass main = new SerialClass();
  main.initialize();
 
-// main.imprimirInfo();
- 
  Thread t=new Thread() {
  public void run() {
- //the following line will keep this app alive for 1000 seconds,
- //waiting for events to occur and responding to them (printing incoming messages to console).
+ 
  try {Thread.sleep(3000);
 // Date date=new Date();
 // String d=date.toLocaleString();
 //String []dpartes=d.split(" ");
  
  while(true){
-Thread.sleep(60000);
+
 writeData("limpialcd\n");
 writeData("Onlcd\n");
 writeData(main.imprimirInfoCpu()+"\n");
 writeData("cambialn\n");
 //writeData(dpartes[0]+"\n");
 writeData(main.imprimirInfoRam()+"\n");
+Thread.sleep(60000);
 //writeData(dpartes[1]+"\n");
  //System.exit(0);
  }
